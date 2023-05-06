@@ -24,7 +24,7 @@ namespace Tickets.Controllers
         [HttpGet]
         public ActionResult<string> Sale(ApiVersion version, string content)
         {
-            return _schemasValidator.ValidateBySchema(ControllerContext.ActionDescriptor, version, content).ToString();
+            return _schemasValidator.ContentIsValidBySchema(ControllerContext.ActionDescriptor, version, content).ToString();
         }
         [HttpGet]
         public ActionResult Refund()

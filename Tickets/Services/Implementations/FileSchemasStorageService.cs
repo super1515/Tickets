@@ -9,7 +9,7 @@ namespace Tickets.Services.Implementations
         {
             LoadSchemas(schemasPath);
         }
-        void LoadSchemas(string schemasPath)
+        private void LoadSchemas(string schemasPath)
         {
             string[] paths = Directory.GetFiles(schemasPath, "*", SearchOption.AllDirectories);
             foreach (string path in paths)

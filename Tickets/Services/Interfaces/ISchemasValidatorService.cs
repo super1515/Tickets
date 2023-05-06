@@ -5,7 +5,7 @@ namespace Tickets.Services.Interfaces
 {
     public interface ISchemasValidatorService
     {
-        public bool ValidateBySchema(ControllerActionDescriptor descriptor, 
+        public bool ContentIsValidBySchema(ControllerActionDescriptor descriptor, 
             ApiVersion apiVersion, string content);
     }
 }

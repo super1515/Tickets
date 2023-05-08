@@ -1,10 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Schema;
-using System.Runtime.Versioning;
-using System.Text;
 using Tickets.Dto;
 using Tickets.Services.Interfaces;
 
@@ -17,22 +11,25 @@ namespace Tickets.Controllers
     {
         private readonly ILogger<ProcessController> _logger;
         private readonly ISchemasValidatorService _schemasValidator;
-        public ProcessController(ISchemasValidatorService schemasValidator, ILogger<ProcessController> logger)
+        private readonly IProcessService _process;
+        public ProcessController(ISchemasValidatorService schemasValidator, ILogger<ProcessController> logger, IProcessService process)
         {
             _schemasValidator = schemasValidator;
             _logger = logger;
+            _process = process;
         }
         [HttpPost]
-        public ActionResult<string> Sale(ApiVersion version, [FromBody] SaleRequestDto content)
+        public async Task<ActionResult> Sale(ApiVersion version, [FromBody] SaleRequestDto content)
         {
-            Console.WriteLine(content.OperationType);
-            return Ok(content);
+            return await _process.CreateSegments(content);
+            //return Ok();
             //return _schemasValidator.ContentIsValidBySchema(ControllerContext.ActionDescriptor, version, "{\r\n    \"operation_type\": \"refund\",\r\n    \"operation_time\": \"2022-01-01T03:25+03:00\",\r\n    \"operation_place\": \"Aeroflot\",\r\n    \"ticket_number\": \"5552139265672\"\r\n}\r\n").ToString();
         }
         [HttpGet]
-        public ActionResult Refund([FromBody] RefundRequestDto content)
+        public async Task<ActionResult> Refund([FromBody] RefundRequestDto content)
         {
-            return Conflict();
+            return await _process.RefundSegments(content);
+            //return Conflict();
         }
     }
 }

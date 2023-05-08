@@ -18,6 +18,8 @@ builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationDbContext>(o
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
     .UseSnakeCaseNamingConvention()
     );
+builder.Services.AddScoped<IProcessService, ProcessService>();
+builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 
 builder.Services.AddApiVersioning(config =>
 {

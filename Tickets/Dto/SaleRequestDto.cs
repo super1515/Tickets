@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using System.Xml.Linq;
+﻿using System.Text.Json.Serialization;
 
 namespace Tickets.Dto
 {
@@ -10,13 +7,13 @@ namespace Tickets.Dto
         [JsonPropertyName("operation_type")]
         public string? OperationType { get; set; }
         [JsonPropertyName("operation_time")]
-        public DateTime OperationTime { get; set; }
+        public DateTimeOffset OperationTime { get; set; }
         [JsonPropertyName("operation_place")]
         public string? OperationPlace { get; set; }
         [JsonPropertyName("passenger")]
         public Passenger Passenger { get; set; }
         [JsonPropertyName("routes")]
-        public Route[] Routes { get; set; }
+        public IEnumerable<Route> Routes { get; set; }
     }
     public class Passenger
     {
@@ -51,11 +48,11 @@ namespace Tickets.Dto
         [JsonPropertyName("depart_place")]
         public string? DepartPlace { get; set; }
         [JsonPropertyName("depart_datetime")]
-        public DateTime DepartDatetime { get; set; }
+        public DateTimeOffset DepartDatetime { get; set; }
         [JsonPropertyName("arrive_place")]
         public string? ArrivePlace { get; set; }
         [JsonPropertyName("arrive_datetime")]
-        public DateTime ArriveDatetime { get; set; }
+        public DateTimeOffset ArriveDatetime { get; set; }
         [JsonPropertyName("pnr_id")]
         public string? PnrId { get; set; }
     }

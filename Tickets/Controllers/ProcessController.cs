@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using Tickets.Dto;
+using Tickets.Filters;
+using Tickets.Models;
 using Tickets.Services.Interfaces;
 
 namespace Tickets.Controllers
@@ -9,27 +12,41 @@ namespace Tickets.Controllers
     [ApiVersion("1.0")]
     public class ProcessController : ControllerBase
     {
-        private readonly ILogger<ProcessController> _logger;
-        private readonly ISchemasValidatorService _schemasValidator;
+        private readonly IMappingService _mapper;
         private readonly IProcessService _process;
-        public ProcessController(ISchemasValidatorService schemasValidator, ILogger<ProcessController> logger, IProcessService process)
+        private const string requestInNotValidMsg = "Request is not valid!";
+        private const string refundIsNotSuccessMsg = "Refund is not success!";
+        private const string saleSuccessMsg = "Sale is success!";
+        private const string refundSuccessMsg = "Refund is success!";
+        public ProcessController(IMappingService mapper, IProcessService process)
         {
-            _schemasValidator = schemasValidator;
-            _logger = logger;
+            _mapper = mapper;
             _process = process;
         }
         [HttpPost]
-        public async Task<ActionResult> Sale(ApiVersion version, [FromBody] SaleRequestDto content)
+        [RequestSizeLimit(2048)]
+        [ValidateWithJsonSchemeFilter(HttpStatusCode.BadRequest, " ")]
+        public async Task<ActionResult<int>> SaleAsync([FromBody] SaleRequestDto content)
         {
-            return await _process.CreateSegments(content);
-            //return Ok();
-            //return _schemasValidator.ContentIsValidBySchema(ControllerContext.ActionDescriptor, version, "{\r\n    \"operation_type\": \"refund\",\r\n    \"operation_time\": \"2022-01-01T03:25+03:00\",\r\n    \"operation_place\": \"Aeroflot\",\r\n    \"ticket_number\": \"5552139265672\"\r\n}\r\n").ToString();
+            if (!ModelState.IsValid)
+                return BadRequest(ApiResponse<string>.Fail(requestInNotValidMsg));
+
+            await _process.CreateSegmentsAsync(_mapper.Map(content));
+            return Ok(ApiResponse<string>.Success(null, saleSuccessMsg));
         }
-        [HttpGet]
-        public async Task<ActionResult> Refund([FromBody] RefundRequestDto content)
+        [HttpPost]
+        [RequestSizeLimit(2048)]
+        [ValidateWithJsonSchemeFilter(HttpStatusCode.BadRequest, " ")]
+        public async Task<ActionResult> RefundAsync([FromBody] RefundRequestDto content)
         {
-            return await _process.RefundSegments(content);
-            //return Conflict();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ApiResponse<string>.Fail(requestInNotValidMsg));
+            }
+            bool successRefund = await _process.RefundSegmentsAsync(content);
+            if (!successRefund)
+                return Conflict(ApiResponse<string>.Fail(refundIsNotSuccessMsg));
+            return Ok(ApiResponse<string>.Success(null, refundSuccessMsg));
         }
     }
 }

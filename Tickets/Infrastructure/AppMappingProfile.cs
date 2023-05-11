@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using System;
 using Tickets.Dto;
 using Tickets.Models;
 
@@ -19,8 +18,12 @@ namespace Tickets.Infrastructure
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Passenger.Gender))
                 .ForMember(dest => dest.Patronymic, opt => opt.MapFrom(src => src.Passenger.Patronymic))
                 .ForMember(dest => dest.PassengerType, opt => opt.MapFrom(src => src.Passenger.PassengerType))
-                .ForMember(dest => dest.TicketType, opt => opt.MapFrom(src => src.Passenger.TicketType));
-            CreateMap<Dto.Route, Segments>().ReverseMap();
+                .ForMember(dest => dest.TicketType, opt => opt.MapFrom(src => src.Passenger.TicketType))
+                .ForMember(dest => dest.OperationTime, opt => opt.Ignore());
+            CreateMap<Dto.Route, Segments>()
+                .ForMember(dest => dest.OperationTime, opt => opt.Ignore())
+                .ForMember(dest => dest.ArriveDatetime, opt => opt.Ignore())
+                .ForMember(dest => dest.DepartDatetime, opt => opt.Ignore());
         }
     }
 }

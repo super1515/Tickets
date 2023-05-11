@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
-using System.Linq;
 using System.Text;
 using Tickets.Services.Interfaces;
 
@@ -23,10 +23,16 @@ namespace Tickets.Services.Implementations
             string relPath = InsertValuesInTemplate(version, descriptor.ControllerName, descriptor.ActionName);
             var schema = _schemasStorage.SchemasData.FirstOrDefault(t => 
                 t.Key.Contains(relPath, StringComparison.CurrentCultureIgnoreCase));
-
             JSchema jSchema = JSchema.Parse(schema.Value);
-            JObject jContent = JObject.Parse(content);
-
+            JObject jContent;
+            try
+            {
+                jContent = JObject.Parse(content);
+            }
+            catch (JsonReaderException)
+            {
+                return false;
+            }
             return jContent.IsValid(jSchema);
         }
         private string InsertValuesInTemplate(string version, string controller, string action)

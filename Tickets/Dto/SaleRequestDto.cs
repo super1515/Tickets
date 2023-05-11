@@ -1,7 +1,10 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using Tickets.CustomValidationAttributes;
 
 namespace Tickets.Dto
 {
+    [DocumentNumberIsValid]
     public class SaleRequestDto
     {
         [JsonPropertyName("operation_type")]
@@ -28,11 +31,13 @@ namespace Tickets.Dto
         [JsonPropertyName("doc_number")]
         public string? DocNumber { get; set; }
         [JsonPropertyName("birthdate")]
-        public string? Birthdate { get; set; }
+        public DateOnly Birthdate { get; set; }
         [JsonPropertyName("gender")]
+        [RegularExpression(@"[M|F]", ErrorMessage = "{0} field accepts only M or F letters.")]
         public string? Gender { get; set; }
         [JsonPropertyName("passenger_type")]
         public string? PassengerType { get; set; }
+        [RegularExpression(@"\d{13}", ErrorMessage = "{0} must consist of 13 digits")]
         [JsonPropertyName("ticket_number")]
         public string? TicketNumber { get; set; }
         [JsonPropertyName("ticket_type")]

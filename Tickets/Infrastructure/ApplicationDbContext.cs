@@ -10,8 +10,5 @@ namespace Tickets.Infrastructure
         {
             Database.EnsureCreated();
         }
-
-
-
     }
 }

@@ -11,24 +11,24 @@ namespace Tickets.Models
         public string? Patronymic { get; set; }
         public string? DocType { get; set; }
         public string? DocNumber { get; set; }
-        public DateTimeOffset Birthdate { get; set; }
+        public DateOnly Birthdate { get; set; }
         public string? Gender { get; set; }
         public string? PassengerType { get; set; }
         public string? TicketNumber { get; set; }
-        public string? SerialNumber { get; set; }
+        public uint SerialNumber { get; set; }
         public int TicketType { get; set; }
         public string? OperationType { get; set; }
-        public DateTimeOffset OperationTime { get; set; }
+        public DateTime OperationTime { get; set; }
         public string? OperationPlace { get; set; }
         public string? AirlineCode { get; set; }
         public int FlightNum { get; set; }
         public string? DepartPlace { get; set; }
-        public DateTimeOffset DepartDatetime { get; set; }
+        public DateTime DepartDatetime { get; set; }
         public string? ArrivePlace { get; set; }
-        public DateTimeOffset ArriveDatetime { get; set; }
+        public DateTime ArriveDatetime { get; set; }
         public string? PnrId { get; set; }
-        public short OperationTimeTimezone { get; set; }
-        public short DepartDatetimeTimezone { get; set; }
-        public short ArriveDatetimeTimezone { get; set; }
+        public string? OperationTimeTimezone { get; set; }
+        public string? DepartDatetimeTimezone { get; set; }
+        public string? ArriveDatetimeTimezone { get; set; }
     }
 }

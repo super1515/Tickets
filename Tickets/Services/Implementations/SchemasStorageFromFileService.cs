@@ -2,10 +2,10 @@
 
 namespace Tickets.Services.Implementations
 {
-    public class FileSchemasStorageService : ISchemasStorageService
+    public class SchemasStorageFromFileService : ISchemasStorageService
     {
         public Dictionary<string, string> SchemasData { get; private set; } = new Dictionary<string, string>();
-        public FileSchemasStorageService(string schemasPath)
+        public SchemasStorageFromFileService(string schemasPath)
         {
             LoadSchemas(schemasPath);
         }

@@ -11,6 +11,11 @@ namespace Tickets.Middlewares
         private readonly RequestDelegate _next;
         private const string conflictSqlState = "23505";
         private const string timeoutSqlState = "55P03";
+        private const string conflictErrorMsg = "Database conflict error";
+        private const string databaseTimeoutErrorMsg = "Database timeout error";
+        private const string requestTimeoutErrorMsg = "Request timeout error";
+        private const string reqBodyTooLargeExceptionMsg = "Request body too large.";
+        private const string reqBodyTooLargeErrorMsg = "Request body too large!";
         public ErrorHandlerMiddleware(RequestDelegate next)
         {
             _next = next;
@@ -27,13 +32,14 @@ namespace Tickets.Middlewares
                 var response = context.Response;
                 response.ContentType = "application/json";
                 var responseModel = ApiResponse<string>.Fail(error.Message);
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 switch (error)
                 {
                     case DbUpdateException ex when ex.InnerException is PostgresException:
                         pge = ex.InnerException as PostgresException;
                         if (pge != null && pge.SqlState == conflictSqlState)
                         {
-                            responseModel.Message = "Database conflict error";
+                            responseModel.Message = conflictErrorMsg;
                             response.StatusCode = (int)HttpStatusCode.Conflict;
                         }
                         break;
@@ -41,16 +47,20 @@ namespace Tickets.Middlewares
                         pge = ex.InnerException.InnerException as PostgresException;
                         if (pge != null && pge.SqlState == timeoutSqlState)
                         {
-                            responseModel.Message = "Database timeout error";
+                            responseModel.Message = databaseTimeoutErrorMsg;
                             response.StatusCode = (int)HttpStatusCode.RequestTimeout;
                         }
                         break;
                     case TaskCanceledException:
-                        responseModel.Message = "Request timeout error";
+                        responseModel.Message = requestTimeoutErrorMsg;
                         response.StatusCode = (int)HttpStatusCode.RequestTimeout;
                         break;
-                    default:
-                        response.StatusCode = (int) HttpStatusCode.InternalServerError;
+                    case BadHttpRequestException ex:
+                        if (ex.Message.Contains(reqBodyTooLargeExceptionMsg))
+                        {
+                            responseModel.Message = reqBodyTooLargeErrorMsg;
+                            response.StatusCode = (int)HttpStatusCode.RequestEntityTooLarge;
+                        }
                         break;
                 }
                 var result = JsonSerializer.Serialize(responseModel);

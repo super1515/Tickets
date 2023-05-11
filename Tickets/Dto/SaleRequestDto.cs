@@ -8,11 +8,11 @@ namespace Tickets.Dto
     public class SaleRequestDto
     {
         [JsonPropertyName("operation_type")]
-        public string? OperationType { get; set; }
+        public string OperationType { get; set; }
         [JsonPropertyName("operation_time")]
         public DateTimeOffset OperationTime { get; set; }
         [JsonPropertyName("operation_place")]
-        public string? OperationPlace { get; set; }
+        public string OperationPlace { get; set; }
         [JsonPropertyName("passenger")]
         public Passenger Passenger { get; set; }
         [JsonPropertyName("routes")]
@@ -21,25 +21,25 @@ namespace Tickets.Dto
     public class Passenger
     {
         [JsonPropertyName("name")]
-        public string? Name { get; set; }
+        public string Name { get; set; }
         [JsonPropertyName("surname")]
-        public string? Surname { get; set; }
+        public string Surname { get; set; }
         [JsonPropertyName("patronymic")]
-        public string? Patronymic { get; set; }
+        public string Patronymic { get; set; }
         [JsonPropertyName("doc_type")]
-        public string? DocType { get; set; }
+        public string DocType { get; set; }
         [JsonPropertyName("doc_number")]
-        public string? DocNumber { get; set; }
+        public string DocNumber { get; set; }
         [JsonPropertyName("birthdate")]
         public DateOnly Birthdate { get; set; }
         [JsonPropertyName("gender")]
         [RegularExpression(@"[M|F]", ErrorMessage = "{0} field accepts only M or F letters.")]
-        public string? Gender { get; set; }
+        public string Gender { get; set; }
         [JsonPropertyName("passenger_type")]
-        public string? PassengerType { get; set; }
+        public string PassengerType { get; set; }
         [RegularExpression(@"\d{13}", ErrorMessage = "{0} must consist of 13 digits")]
         [JsonPropertyName("ticket_number")]
-        public string? TicketNumber { get; set; }
+        public string TicketNumber { get; set; }
         [JsonPropertyName("ticket_type")]
         public int TicketType { get; set; }
     }

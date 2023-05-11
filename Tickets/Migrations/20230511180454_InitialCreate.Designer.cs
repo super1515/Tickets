@@ -12,7 +12,7 @@ using Tickets.Infrastructure;
 namespace Tickets.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230511153731_InitialCreate")]
+    [Migration("20230511180454_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -27,14 +27,15 @@ namespace Tickets.Migrations
 
             modelBuilder.Entity("Tickets.Models.Segments", b =>
                 {
-                    b.Property<int?>("ID")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("ID"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
                     b.Property<string>("AirlineCode")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("airline_code");
 
@@ -43,10 +44,12 @@ namespace Tickets.Migrations
                         .HasColumnName("arrive_datetime");
 
                     b.Property<string>("ArriveDatetimeTimezone")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("arrive_datetime_timezone");
 
                     b.Property<string>("ArrivePlace")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("arrive_place");
 
@@ -59,18 +62,22 @@ namespace Tickets.Migrations
                         .HasColumnName("depart_datetime");
 
                     b.Property<string>("DepartDatetimeTimezone")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("depart_datetime_timezone");
 
                     b.Property<string>("DepartPlace")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("depart_place");
 
                     b.Property<string>("DocNumber")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("doc_number");
 
                     b.Property<string>("DocType")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("doc_type");
 
@@ -79,14 +86,17 @@ namespace Tickets.Migrations
                         .HasColumnName("flight_num");
 
                     b.Property<string>("Gender")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("gender");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
 
                     b.Property<string>("OperationPlace")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("operation_place");
 
@@ -95,22 +105,27 @@ namespace Tickets.Migrations
                         .HasColumnName("operation_time");
 
                     b.Property<string>("OperationTimeTimezone")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("operation_time_timezone");
 
                     b.Property<string>("OperationType")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("operation_type");
 
                     b.Property<string>("PassengerType")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("passenger_type");
 
                     b.Property<string>("Patronymic")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("patronymic");
 
                     b.Property<string>("PnrId")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("pnr_id");
 
@@ -119,10 +134,12 @@ namespace Tickets.Migrations
                         .HasColumnName("serial_number");
 
                     b.Property<string>("Surname")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("surname");
 
                     b.Property<string>("TicketNumber")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("ticket_number");
 

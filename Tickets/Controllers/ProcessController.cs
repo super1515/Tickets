@@ -25,7 +25,7 @@ namespace Tickets.Controllers
         }
         [HttpPost]
         [RequestSizeLimit(2048)]
-        [ValidateWithJsonSchemeFilter(HttpStatusCode.BadRequest, " ")]
+        [ValidateWithJsonSchemeFilter(HttpStatusCode.BadRequest, null)]
         public async Task<ActionResult<int>> SaleAsync([FromBody] SaleRequestDto content)
         {
             if (!ModelState.IsValid)
@@ -36,13 +36,11 @@ namespace Tickets.Controllers
         }
         [HttpPost]
         [RequestSizeLimit(2048)]
-        [ValidateWithJsonSchemeFilter(HttpStatusCode.BadRequest, " ")]
+        [ValidateWithJsonSchemeFilter(HttpStatusCode.BadRequest, null)]
         public async Task<ActionResult> RefundAsync([FromBody] RefundRequestDto content)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ApiResponse<string>.Fail(requestInNotValidMsg));
-            }
             bool successRefund = await _process.RefundSegmentsAsync(content);
             if (!successRefund)
                 return Conflict(ApiResponse<string>.Fail(refundIsNotSuccessMsg));

@@ -11,7 +11,8 @@ string schemasPath = AppContext.BaseDirectory + builder.Configuration.GetValue<s
 string schemasTemplatePath = builder.Configuration.GetValue<string>("Schemas:SchemasTemplatePath");
 string sqlQueriesPath = AppContext.BaseDirectory + builder.Configuration.GetValue<string>("Sql:SqlQueriesPath");
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(option =>
+            option.JsonSerializerOptions.AllowTrailingCommas = true);
 builder.Services.AddSingleton<ISchemasStorageService>(x =>
     new SchemasStorageFromFileService(schemasPath));
 builder.Services.AddSingleton<ISqlStorageService>(x =>

@@ -12,7 +12,7 @@ namespace Tickets.Filters
     public class ValidateWithJsonSchemeFilter : Attribute, IAsyncResourceFilter
     {
         private readonly HttpStatusCode _statusCode;
-        private readonly string _message;
+        private readonly string? _message;
         private const string responseContentType = "application/json";
         public ValidateWithJsonSchemeFilter(HttpStatusCode statusCode, string message)
         {
@@ -36,9 +36,10 @@ namespace Tickets.Filters
         }
         private async Task WriteResponseAsync(HttpResponse response)
         {
-            var responseModel = ApiResponse<string>.Fail(_message);
             response.StatusCode = (int)_statusCode;
+            if (_message == null) return;
             response.ContentType = responseContentType;
+            var responseModel = ApiResponse<string>.Fail(_message);
             var result = JsonSerializer.Serialize(responseModel);
             await response.WriteAsync(result);
         }

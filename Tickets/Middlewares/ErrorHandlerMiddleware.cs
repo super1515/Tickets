@@ -3,7 +3,11 @@ using Npgsql;
 using System.Net;
 using System.Text.Json;
 using Tickets.Models;
-
+/*
+ * 
+ * Middleware необходимый для обработки исключений
+ * 
+ */
 namespace Tickets.Middlewares
 {
     public class ErrorHandlerMiddleware

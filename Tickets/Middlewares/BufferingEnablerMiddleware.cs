@@ -1,4 +1,9 @@
-﻿namespace Tickets.Middlewares
+﻿/*
+ * 
+ * Middleware необходимый для множественного чтения тела запроса
+ * 
+ */
+namespace Tickets.Middlewares
 {
     public class BufferingEnablerMiddleware
     {

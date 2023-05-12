@@ -1,5 +1,9 @@
 ﻿using Tickets.Services.Interfaces;
-
+/*
+ * 
+ * Сервис для хранения JSON схем
+ * 
+ */
 namespace Tickets.Services.Implementations
 {
     public class SchemasStorageFromFileService : ISchemasStorageService

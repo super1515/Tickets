@@ -2,7 +2,11 @@
 using Tickets.Dto;
 using Tickets.Models;
 using Tickets.Services.Interfaces;
-
+/*
+ * 
+ * Сервис для маппинга моделей
+ * 
+ */
 namespace Tickets.Services.Implementations
 {
     public class MappingService : IMappingService

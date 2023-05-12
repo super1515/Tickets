@@ -10,6 +10,7 @@ namespace Tickets.Controllers
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]/[action]")]
     [ApiVersion("1.0")]
+    [RequestSizeLimit(2048)]
     public class ProcessController : ControllerBase
     {
         private readonly IMappingService _mapper;
@@ -24,7 +25,6 @@ namespace Tickets.Controllers
             _process = process;
         }
         [HttpPost]
-        [RequestSizeLimit(2048)]
         [ValidateWithJsonSchemeFilter(HttpStatusCode.BadRequest, null)]
         public async Task<ActionResult<int>> SaleAsync([FromBody] SaleRequestDto content)
         {
@@ -35,7 +35,6 @@ namespace Tickets.Controllers
             return Ok(ApiResponse<string>.Success(null, saleSuccessMsg));
         }
         [HttpPost]
-        [RequestSizeLimit(2048)]
         [ValidateWithJsonSchemeFilter(HttpStatusCode.BadRequest, null)]
         public async Task<ActionResult> RefundAsync([FromBody] RefundRequestDto content)
         {

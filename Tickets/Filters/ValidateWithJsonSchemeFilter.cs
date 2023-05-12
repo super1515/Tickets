@@ -6,7 +6,11 @@ using System.Text;
 using System.Text.Json;
 using Tickets.Models;
 using Tickets.Services.Interfaces;
-
+/*
+ * 
+ * Фильтр для валидации тела запроса JSON схемой
+ * 
+ */
 namespace Tickets.Filters
 {
     public class ValidateWithJsonSchemeFilter : Attribute, IAsyncResourceFilter

@@ -5,7 +5,11 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using System.Text;
 using Tickets.Services.Interfaces;
-
+/*
+ * 
+ * Сервис для валидации тела запроса JSON схемой
+ * 
+ */
 namespace Tickets.Services.Implementations
 {
     public class JsonSchemasValidatorService : ISchemasValidatorService

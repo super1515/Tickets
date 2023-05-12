@@ -1,5 +1,9 @@
 ﻿using Tickets.Services.Interfaces;
-
+/*
+ * 
+ * Сервис для хранения SQL запросов
+ * 
+ */
 namespace Tickets.Services.Implementations
 {
     public class SqlStorageFromFileService : ISqlStorageService

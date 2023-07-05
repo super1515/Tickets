@@ -1,13 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using System.Text.RegularExpressions;
 using Tickets.Application.Dto;
-using Tickets.Infrastructure;
 using Tickets.Infrastructure.Contexts;
 using Tickets.Infrastructure.Models;
 using Tickets.Infrastructure.Services.Interfaces;
 using Tickets.Application.Services.Interfaces;
-using System.Net;
 using Tickets.Infrastructure.Exceptions;
 /*
 * 
@@ -24,7 +21,6 @@ namespace Tickets.Infrastructure.Services.Implementations
         private const string timeoutSqlState = "55P03";
         private const string conflictErrorMsg = "Database conflict error.";
         private const string databaseTimeoutErrorMsg = "Database timeout error.";
-        private const string ticketNumberPattern = @"^\d{13}$";
         private const string setLockTimeoutSqlName = "set_lock_timeout.sql";
         private const string updateRefundSegmentsSqlName = "update_refund_segments.sql";
         public ProcessService(ApplicationDbContext context, ISqlStorageService sqlStorage)

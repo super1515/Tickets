@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Npgsql;
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
 using Tickets.Infrastructure.Models;
 using Tickets.Infrastructure.Exceptions;
@@ -28,7 +26,6 @@ namespace Tickets.WebAPI.Middlewares
             }
             catch (Exception error)
             {
-                PostgresException? pge;
                 var response = context.Response;
                 response.ContentType = "application/json";
                 var responseModel = ApiResponse<string>.Fail(error.Message);

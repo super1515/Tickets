@@ -4,6 +4,7 @@ using Tickets.Application.Dto;
 using Tickets.WebAPI.Filters;
 using Tickets.Infrastructure.Models;
 using Tickets.Infrastructure.Services.Interfaces;
+using Tickets.Application.Utility;
 
 namespace Tickets.WebAPI.Controllers
 {
@@ -15,10 +16,6 @@ namespace Tickets.WebAPI.Controllers
     {
         private readonly IMappingService _mapper;
         private readonly IProcessService _process;
-        private const string requestInNotValidMsg = "Request is not valid!";
-        private const string refundIsNotSuccessMsg = "Refund is not success!";
-        private const string saleSuccessMsg = "Sale is success!";
-        private const string refundSuccessMsg = "Refund is success!";
         public ProcessController(IMappingService mapper, IProcessService process)
         {
             _mapper = mapper;
@@ -29,21 +26,22 @@ namespace Tickets.WebAPI.Controllers
         public async Task<ActionResult<int>> SaleAsync([FromBody] SaleRequestDto content)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ApiResponse<string>.Fail(requestInNotValidMsg));
+                return BadRequest(ApiResponse<string>.Fail(ResponseMessages.RequestInNotValidMsg));
 
             await _process.CreateSegmentsAsync(_mapper.Map(content));
-            return Ok(ApiResponse<string>.Success(null, saleSuccessMsg));
+            return Ok(ApiResponse<string>.Success(null, ResponseMessages.SaleSuccessMsg));
         }
         [HttpPost]
         [ValidateWithJsonSchemeFilter(HttpStatusCode.BadRequest, null)]
         public async Task<ActionResult> RefundAsync([FromBody] RefundRequestDto content)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ApiResponse<string>.Fail(requestInNotValidMsg));
+                return BadRequest(ApiResponse<string>.Fail(ResponseMessages.RequestInNotValidMsg));
+
             bool successRefund = await _process.RefundSegmentsAsync(content);
             if (!successRefund)
-                return Conflict(ApiResponse<string>.Fail(refundIsNotSuccessMsg));
-            return Ok(ApiResponse<string>.Success(null, refundSuccessMsg));
+                return Conflict(ApiResponse<string>.Fail(ResponseMessages.RefundIsNotSuccessMsg));
+            return Ok(ApiResponse<string>.Success(null, ResponseMessages.RefundSuccessMsg));
         }
     }
 }

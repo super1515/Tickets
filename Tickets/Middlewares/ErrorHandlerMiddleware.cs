@@ -15,9 +15,9 @@ namespace Tickets.WebAPI.Middlewares
         private readonly RequestDelegate _next;
         private const string conflictSqlState = "23505";
         private const string timeoutSqlState = "55P03";
-        private const string conflictErrorMsg = "Database conflict error";
-        private const string databaseTimeoutErrorMsg = "Database timeout error";
-        private const string requestTimeoutErrorMsg = "Request timeout error";
+        private const string conflictErrorMsg = "Database conflict error.";
+        private const string databaseTimeoutErrorMsg = "Database timeout error.";
+        private const string requestTimeoutErrorMsg = "Request timeout error.";
         private const string reqBodyTooLargeExceptionMsg = "Request body too large.";
         private const string reqBodyTooLargeErrorMsg = "Request body too large!";
         public ErrorHandlerMiddleware(RequestDelegate next)

@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using Tickets.Models;
-using Tickets.Services.Interfaces;
+using Tickets.Infrastructure.Models;
+using Tickets.WebAPI.Services.Interfaces;
 /*
  * 
  * Фильтр для валидации тела запроса JSON схемой
  * 
  */
-namespace Tickets.Filters
+namespace Tickets.WebAPI.Filters
 {
     public class ValidateWithJsonSchemeFilter : Attribute, IAsyncResourceFilter
     {

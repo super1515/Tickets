@@ -3,7 +3,7 @@
  * Middleware необходимый для множественного чтения тела запроса
  * 
  */
-namespace Tickets.Middlewares
+namespace Tickets.WebAPI.Middlewares
 {
     public class BufferingEnablerMiddleware
     {

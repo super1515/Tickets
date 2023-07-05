@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using Tickets.Dto;
-using Tickets.Filters;
-using Tickets.Models;
-using Tickets.Services.Interfaces;
+using Tickets.Application.Dto;
+using Tickets.WebAPI.Filters;
+using Tickets.Infrastructure.Models;
+using Tickets.Infrastructure.Services.Interfaces;
 
-namespace Tickets.Controllers
+namespace Tickets.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]/[action]")]

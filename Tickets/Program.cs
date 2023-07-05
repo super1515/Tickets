@@ -1,9 +1,14 @@
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
-using Tickets.Infrastructure;
-using Tickets.Middlewares;
-using Tickets.Services.Implementations;
-using Tickets.Services.Interfaces;
+using Tickets.WebAPI.Middlewares;
+using Tickets.Infrastructure.Services.Implementations;
+using Tickets.Infrastructure.Services.Interfaces;
+using Tickets.Infrastructure.Common;
+using Tickets.Application.Services.Interfaces;
+using Tickets.WebAPI.Services.Interfaces;
+using Tickets.Infrastructure.Contexts;
+using Tickets.WebAPI.Services.Implementations;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +25,7 @@ builder.Services.AddSingleton<ISqlStorageService>(x =>
 builder.Services.AddTransient<ISchemasValidatorService>(x =>
     new JsonSchemasValidatorService(x.GetRequiredService<ISchemasStorageService>(), schemasTemplatePath));
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Tickets.WebAPI"))
     .UseSnakeCaseNamingConvention()
     );
 builder.Services.AddAutoMapper(typeof(AppMappingProfile));

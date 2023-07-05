@@ -7,17 +7,23 @@ using Tickets.Infrastructure.Contexts;
 using Tickets.Infrastructure.Models;
 using Tickets.Infrastructure.Services.Interfaces;
 using Tickets.Application.Services.Interfaces;
+using System.Net;
+using Tickets.Infrastructure.Exceptions;
 /*
- * 
- * Сервис для работы с базой данных
- * 
- */
+* 
+* Сервис для работы с базой данных
+* 
+*/
 namespace Tickets.Infrastructure.Services.Implementations
 {
     public class ProcessService : IProcessService
     {
         private readonly ApplicationDbContext _context;
         private readonly ISqlStorageService _sqlStorage;
+        private const string conflictSqlState = "23505";
+        private const string timeoutSqlState = "55P03";
+        private const string conflictErrorMsg = "Database conflict error.";
+        private const string databaseTimeoutErrorMsg = "Database timeout error.";
         private const string ticketNumberPattern = @"^\d{13}$";
         private const string setLockTimeoutSqlName = "set_lock_timeout.sql";
         private const string updateRefundSegmentsSqlName = "update_refund_segments.sql";
@@ -38,7 +44,23 @@ namespace Tickets.Infrastructure.Services.Implementations
             {
                 if (!Regex.IsMatch(segments[i].TicketNumber, ticketNumberPattern)) throw new ArgumentException(nameof(segments));
                 await _context.Segments.AddAsync(segments[i]);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }catch (DbUpdateException ex)
+                {
+                    PostgresException pge = ex.InnerException as PostgresException;
+                    if (pge == null) throw;
+                    if (pge.SqlState == timeoutSqlState)
+                    {
+                        throw new RequestTimeoutException(databaseTimeoutErrorMsg, pge);
+                    }
+                    if (pge.SqlState == conflictSqlState)
+                    {
+                        throw new ConflictException(conflictErrorMsg, pge);
+                    }
+                    throw;
+                }
             }
             await transaction.CommitAsync();
         }
@@ -59,7 +81,22 @@ namespace Tickets.Infrastructure.Services.Implementations
                 operationTimeParam, operationTimeTimezoneParam, operationPlaceParam, ticketNumberParam);
             if (rowAffectedCount > 0)
             {
-                await _context.SaveChangesAsync();
+                try
+                {
+                    await _context.SaveChangesAsync();
+                } catch (DbUpdateException ex) {
+                    PostgresException pge = ex.InnerException as PostgresException;
+                    if (pge == null) throw;
+                    if (pge.SqlState == timeoutSqlState)
+                    {
+                        throw new RequestTimeoutException(databaseTimeoutErrorMsg, pge);
+                    }
+                    if (pge.SqlState == conflictSqlState)
+                    {
+                        throw new ConflictException(conflictErrorMsg, pge);
+                    }
+                    throw;
+                }
                 await transaction.CommitAsync();
                 success = true;
             }

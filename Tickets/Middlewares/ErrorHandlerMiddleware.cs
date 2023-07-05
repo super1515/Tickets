@@ -3,6 +3,7 @@ using Npgsql;
 using System.Net;
 using System.Text.Json;
 using Tickets.Infrastructure.Models;
+using Tickets.Infrastructure.Exceptions;
 /*
  * 
  * Middleware необходимый для обработки исключений
@@ -13,13 +14,8 @@ namespace Tickets.WebAPI.Middlewares
     public class ErrorHandlerMiddleware
     {
         private readonly RequestDelegate _next;
-        private const string conflictSqlState = "23505";
-        private const string timeoutSqlState = "55P03";
-        private const string conflictErrorMsg = "Database conflict error.";
-        private const string databaseTimeoutErrorMsg = "Database timeout error.";
         private const string requestTimeoutErrorMsg = "Request timeout error.";
         private const string reqBodyTooLargeExceptionMsg = "Request body too large.";
-        private const string reqBodyTooLargeErrorMsg = "Request body too large!";
         public ErrorHandlerMiddleware(RequestDelegate next)
         {
             _next = next;
@@ -39,21 +35,13 @@ namespace Tickets.WebAPI.Middlewares
                 response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 switch (error)
                 {
-                    case DbUpdateException ex when ex.InnerException is PostgresException:
-                        pge = ex.InnerException as PostgresException;
-                        if (pge != null && pge.SqlState == conflictSqlState)
-                        {
-                            responseModel.Message = conflictErrorMsg;
-                            response.StatusCode = (int)HttpStatusCode.Conflict;
-                        }
+                    case ConflictException ex:
+                        responseModel.Message = ex.Message;
+                        response.StatusCode = (int)HttpStatusCode.Conflict;
                         break;
-                    case InvalidOperationException ex when ex.InnerException is DbUpdateException:
-                        pge = ex.InnerException.InnerException as PostgresException;
-                        if (pge != null && pge.SqlState == timeoutSqlState)
-                        {
-                            responseModel.Message = databaseTimeoutErrorMsg;
-                            response.StatusCode = (int)HttpStatusCode.RequestTimeout;
-                        }
+                    case RequestTimeoutException ex:
+                        responseModel.Message = ex.Message;
+                        response.StatusCode = (int)HttpStatusCode.RequestTimeout;
                         break;
                     case TaskCanceledException:
                         responseModel.Message = requestTimeoutErrorMsg;
@@ -62,7 +50,7 @@ namespace Tickets.WebAPI.Middlewares
                     case BadHttpRequestException ex:
                         if (ex.Message.Contains(reqBodyTooLargeExceptionMsg))
                         {
-                            responseModel.Message = reqBodyTooLargeErrorMsg;
+                            responseModel.Message = reqBodyTooLargeExceptionMsg;
                             response.StatusCode = (int)HttpStatusCode.RequestEntityTooLarge;
                         }
                         break;

@@ -42,7 +42,6 @@ namespace Tickets.Infrastructure.Services.Implementations
             await _context.Database.ExecuteSqlRawAsync(setLockTimeoutSql);
             for (int i = 0; i < segments.Length; i++)
             {
-                if (!Regex.IsMatch(segments[i].TicketNumber, ticketNumberPattern)) throw new ArgumentException(nameof(segments));
                 await _context.Segments.AddAsync(segments[i]);
                 try
                 {
@@ -68,7 +67,6 @@ namespace Tickets.Infrastructure.Services.Implementations
         public async Task<bool> RefundSegmentsAsync(RefundRequestDto refundDto)
         {
             if (refundDto == null) throw new ArgumentNullException(nameof(refundDto));
-            if (!Regex.IsMatch(refundDto.TicketNumber, ticketNumberPattern)) throw new ArgumentException(nameof(refundDto));
             bool success = false;
             string updateRefundSegmentsSql = _sqlStorage.Queries.FirstOrDefault(t =>
                 t.Key.Contains(updateRefundSegmentsSqlName, StringComparison.CurrentCultureIgnoreCase)).Value;

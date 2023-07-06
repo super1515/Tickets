@@ -70,7 +70,6 @@ namespace Tickets.Infrastructure.Services.Implementations
             NpgsqlParameter operationTimeTimezoneParam = new NpgsqlParameter("@operation_time_timezone", $"-{refundDto.OperationTime.Offset.Hours}");
             NpgsqlParameter operationPlaceParam = new NpgsqlParameter("@operation_place", refundDto.OperationPlace);
             NpgsqlParameter ticketNumberParam = new NpgsqlParameter("@ticket_number", refundDto.TicketNumber);
-            //using var transaction = await _context.Database.BeginTransactionAsync();
             int rowAffectedCount = await _context.Database.ExecuteSqlRawAsync(updateRefundSegmentsSql, 
                 operationTimeParam, operationTimeTimezoneParam, operationPlaceParam, ticketNumberParam);
             if (rowAffectedCount > 0)
@@ -91,7 +90,6 @@ namespace Tickets.Infrastructure.Services.Implementations
                     }
                     throw;
                 }
-                //await transaction.CommitAsync();
                 success = true;
             }
             return success;

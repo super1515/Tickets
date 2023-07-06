@@ -5,19 +5,20 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using System.Text;
 using Tickets.WebAPI.Services.Interfaces;
-using Tickets.Application.Services.Interfaces;
+using Microsoft.Extensions.Options;
+using Tickets.WebAPI.Options.Implementations;
 /*
- * 
- * Сервис для валидации тела запроса JSON схемой
- * 
- */
+* 
+* Сервис для валидации тела запроса JSON схемой
+* 
+*/
 namespace Tickets.WebAPI.Services.Implementations
 {
     public class JsonSchemasValidatorService : ISchemasValidatorService
     {
-        private readonly ISchemasStorageService _schemasStorage;
+        private readonly IOptions<JsonSchemas> _schemasStorage;
         private readonly string _schemasPathTemplate;
-        public JsonSchemasValidatorService(ISchemasStorageService schemasStorage, string schemasPathTemplate)
+        public JsonSchemasValidatorService(IOptions<JsonSchemas> schemasStorage, string schemasPathTemplate)
         {
             _schemasStorage = schemasStorage;
             _schemasPathTemplate = schemasPathTemplate;
@@ -26,9 +27,8 @@ namespace Tickets.WebAPI.Services.Implementations
         {
             string version = apiVersion.ToString().Length == 1 ? apiVersion + ".0" : apiVersion.ToString();
             string relPath = InsertValuesInTemplate(version, descriptor.ControllerName, descriptor.ActionName);
-            var schema = _schemasStorage.SchemasData.FirstOrDefault(t => 
-                t.Key.Contains(relPath, StringComparison.CurrentCultureIgnoreCase));
-            JSchema jSchema = JSchema.Parse(schema.Value);
+            var schema = _schemasStorage.Value.GetBy(relPath)!.Schema;
+            JSchema jSchema = JSchema.Parse(schema);
             JObject jContent;
             try
             {

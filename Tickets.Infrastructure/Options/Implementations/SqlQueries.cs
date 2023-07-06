@@ -1,9 +1,4 @@
 ﻿using Tickets.Infrastructure.Options.Interfaces;
-/*
-* 
-* Сервис для хранения SQL запросов
-* 
-*/
 namespace Tickets.WebAPI.Options.Implementations
 {
     public record SqlQuery(string Name, string Query);

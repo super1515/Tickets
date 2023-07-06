@@ -1,9 +1,4 @@
 ﻿using Tickets.Infrastructure.Options.Interfaces;
-/*
-* 
-* Сервис для хранения JSON схем
-* 
-*/
 namespace Tickets.WebAPI.Options.Implementations
 {
     public record JsonSchema(string Name, string Schema);

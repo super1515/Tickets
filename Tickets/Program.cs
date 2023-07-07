@@ -9,6 +9,7 @@ using Tickets.Infrastructure.Contexts;
 using Tickets.WebAPI.Services.Implementations;
 using Microsoft.Extensions.Options;
 using Tickets.WebAPI.Options.Implementations;
+using Tickets.Application.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +18,8 @@ string schemasTemplatePath = builder.Configuration.GetValue<string>("Schemas:Sch
 string sqlQueriesPath = AppContext.BaseDirectory + builder.Configuration.GetValue<string>("Sql:SqlQueriesPath");
 builder.Services.AddControllers().AddJsonOptions(option =>
             option.JsonSerializerOptions.AllowTrailingCommas = true);
-builder.Services.AddOptions<JsonSchemas>().Configure(x => x.LoadSchemas(schemasPath));
-builder.Services.AddOptions<SqlQueries>().Configure(x => x.LoadQueries(sqlQueriesPath));
+builder.Services.AddSingleton(serviceProvider => Options.Create(new JsonSchemas(FileUtility.GetAllFilesData(schemasPath))));
+builder.Services.AddSingleton(serviceProvider => Options.Create(new SqlQueries(FileUtility.GetAllFilesData(sqlQueriesPath))));
 builder.Services.AddTransient<ISchemasValidatorService>(x =>
     new JsonSchemasValidatorService(x.GetRequiredService<IOptions<JsonSchemas>>(), schemasTemplatePath));
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationDbContext>(options =>

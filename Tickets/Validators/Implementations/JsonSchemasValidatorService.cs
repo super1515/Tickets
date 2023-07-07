@@ -27,7 +27,7 @@ namespace Tickets.WebAPI.Services.Implementations
         {
             string version = apiVersion.ToString().Length == 1 ? apiVersion + ".0" : apiVersion.ToString();
             string relPath = InsertValuesInTemplate(version, descriptor.ControllerName, descriptor.ActionName);
-            var schema = _schemasStorage.Value.GetBy(relPath)!.Schema;
+            var schema = _schemasStorage.Value.GetBy(relPath)!.Data;
             JSchema jSchema = JSchema.Parse(schema);
             JObject jContent;
             try

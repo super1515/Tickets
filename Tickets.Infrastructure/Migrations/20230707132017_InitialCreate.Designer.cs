@@ -12,7 +12,7 @@ using Tickets.Infrastructure.Contexts;
 namespace Tickets.WebAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230705121541_InitialCreate")]
+    [Migration("20230707132017_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

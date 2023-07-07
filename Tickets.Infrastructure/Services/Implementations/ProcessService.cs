@@ -33,7 +33,7 @@ namespace Tickets.Infrastructure.Services.Implementations
         public async Task CreateSegmentsAsync(Segments[] segments)
         {
             if (segments == null || segments.Length == 0) throw new ArgumentException(nameof(segments));
-            string setLockTimeoutSql = _sqlStorage.Value.GetBy(setLockTimeoutSqlName)!.Query;
+            string setLockTimeoutSql = _sqlStorage.Value.GetBy(setLockTimeoutSqlName)!.Data;
             using var transaction = await _context.Database.BeginTransactionAsync();
             await _context.Database.ExecuteSqlRawAsync(setLockTimeoutSql);
             for (int i = 0; i < segments.Length; i++)
@@ -64,7 +64,7 @@ namespace Tickets.Infrastructure.Services.Implementations
         {
             if (refundDto == null) throw new ArgumentNullException(nameof(refundDto));
             bool success = false;
-            string updateRefundSegmentsSql = _sqlStorage.Value.GetBy(updateRefundSegmentsSqlName).Query;
+            string updateRefundSegmentsSql = _sqlStorage.Value.GetBy(updateRefundSegmentsSqlName)!.Data;
             NpgsqlParameter operationTimeParam = new NpgsqlParameter("@operation_time", refundDto.OperationTime.UtcDateTime);
             NpgsqlParameter operationTimeTimezoneParam = new NpgsqlParameter("@operation_time_timezone", $"-{refundDto.OperationTime.Offset.Hours}");
             NpgsqlParameter operationPlaceParam = new NpgsqlParameter("@operation_place", refundDto.OperationPlace);

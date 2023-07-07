@@ -1,28 +1,22 @@
-﻿using Tickets.Infrastructure.Options.Interfaces;
+﻿using Tickets.Application.Utility;
+using Tickets.Infrastructure.Options.Interfaces;
 namespace Tickets.WebAPI.Options.Implementations
 {
-    public record SqlQuery(string Name, string Query);
-
-    public class SqlQueries : IOptionStorage<SqlQuery>
+    public class SqlQueries : IOptionStorage<FileData>
     {
-        private IReadOnlyCollection<SqlQuery> _sqlQueries;
-        public IReadOnlyCollection<SqlQuery> GetAll()
+        private IReadOnlyCollection<FileData> _sqlQueries;
+        public SqlQueries(IReadOnlyCollection<FileData> files)
+        {
+            _sqlQueries = files;
+        }
+        public IReadOnlyCollection<FileData> GetAll()
         {
             return _sqlQueries;
         }
-        public SqlQuery? GetBy(string name)
+        public FileData? GetBy(string name)
         {
             return _sqlQueries.FirstOrDefault(t =>
-                t.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase));
-        }
-        public void LoadQueries(string queriesPath)
-        {
-            var sqlQueries = new List<SqlQuery>();
-            string[] paths = Directory.GetFiles(queriesPath, "*", SearchOption.AllDirectories);
-            foreach (string path in paths)
-                using (StreamReader reader = File.OpenText(path))
-                    sqlQueries.Add(new SqlQuery(path, reader.ReadToEnd()));
-            _sqlQueries = sqlQueries;
+                t.FullPath.Contains(name, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

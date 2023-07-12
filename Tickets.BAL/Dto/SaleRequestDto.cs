@@ -8,7 +8,7 @@ namespace Tickets.BAL.Dto
     public class SaleRequestDto
     {
         [Required]
-        [RegularExpression(@"sale", ErrorMessage = "{0} must be {1}")]
+        [RegularExpression(@"sale", ErrorMessage = "{0} must be {1}.")]
         [JsonPropertyName("operation_type")]
         public string OperationType { get; set; }
         [Required]
@@ -52,7 +52,7 @@ namespace Tickets.BAL.Dto
         [JsonPropertyName("passenger_type")]
         public string PassengerType { get; set; }
         [Required]
-        [RegularExpression(@"\d{13}", ErrorMessage = "{0} must consist of 13 digits")]
+        [RegularExpression(@"\d{13}", ErrorMessage = "{0} must consist of 13 digits.")]
         [JsonPropertyName("ticket_number")]
         public string TicketNumber { get; set; }
         [Required]

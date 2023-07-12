@@ -7,6 +7,7 @@ using Tickets.BAL.Services.Interfaces;
 using Tickets.BAL.Exceptions;
 using Microsoft.Extensions.Options;
 using Tickets.BAL.Options.Implementations;
+using System.Text.RegularExpressions;
 /*
 * 
 * Сервис для работы с базой данных
@@ -18,8 +19,6 @@ namespace Tickets.BAL.Services.Implementations
     {
         private readonly ApplicationDbContext _context;
         private readonly IOptions<SqlQueries> _sqlStorage;
-        private const string conflictSqlState = "23505";
-        private const string timeoutSqlState = "55P03";
         private const string conflictErrorMsg = "Database conflict error.";
         private const string databaseTimeoutErrorMsg = "Database timeout error.";
         private const string setLockTimeoutSqlName = "set_lock_timeout.sql";
@@ -44,15 +43,15 @@ namespace Tickets.BAL.Services.Implementations
                     await _context.SaveChangesAsync();
                 }catch (DbUpdateException ex)
                 {
-                    PostgresException pge = ex.InnerException as PostgresException;
-                    if (pge == null) throw;
-                    if (pge.SqlState == timeoutSqlState)
+                    var inEx = ex.InnerException;
+                    if (inEx == null) throw;
+                    if (inEx.InnerException is PostgresException inPgEx && inPgEx.SqlState == PostgresErrorCodes.LockNotAvailable)
                     {
-                        throw new RequestTimeoutException(databaseTimeoutErrorMsg, pge);
+                        throw new RequestTimeoutException(databaseTimeoutErrorMsg, inPgEx);
                     }
-                    if (pge.SqlState == conflictSqlState)
+                    if (inEx is PostgresException pgex && pgex.SqlState == PostgresErrorCodes.UniqueViolation)
                     {
-                        throw new ConflictException(conflictErrorMsg, pge);
+                        throw new ConflictException(conflictErrorMsg, pgex);
                     }
                     throw;
                 }
@@ -77,15 +76,15 @@ namespace Tickets.BAL.Services.Implementations
                 {
                     await _context.SaveChangesAsync();
                 } catch (DbUpdateException ex) {
-                    PostgresException pge = ex.InnerException as PostgresException;
-                    if (pge == null) throw;
-                    if (pge.SqlState == timeoutSqlState)
+                    var inEx = ex.InnerException;
+                    if (inEx == null) throw;
+                    if (inEx.InnerException is PostgresException inPgEx && inPgEx.SqlState == PostgresErrorCodes.LockNotAvailable)
                     {
-                        throw new RequestTimeoutException(databaseTimeoutErrorMsg, pge);
+                        throw new RequestTimeoutException(databaseTimeoutErrorMsg, inPgEx);
                     }
-                    if (pge.SqlState == conflictSqlState)
+                    if (inEx is PostgresException pgex && pgex.SqlState == PostgresErrorCodes.UniqueViolation)
                     {
-                        throw new ConflictException(conflictErrorMsg, pge);
+                        throw new ConflictException(conflictErrorMsg, pgex);
                     }
                     throw;
                 }

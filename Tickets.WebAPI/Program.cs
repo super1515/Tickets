@@ -15,8 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
 string schemasPath = AppContext.BaseDirectory + builder.Configuration.GetValue<string>("Schemas:SchemasPath");
 string schemasTemplatePath = builder.Configuration.GetValue<string>("Schemas:SchemasTemplatePath");
 string sqlQueriesPath = AppContext.BaseDirectory + builder.Configuration.GetValue<string>("Sql:SqlQueriesPath");
-builder.Services.AddControllers().AddJsonOptions(option =>
-            option.JsonSerializerOptions.AllowTrailingCommas = true);
+builder.Services.AddControllers().AddJsonOptions(options => {
+    options.JsonSerializerOptions.AllowTrailingCommas = true;
+    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+    });
 builder.Services.AddSingleton(serviceProvider => Options.Create(new JsonSchemas(FileUtility.GetAllFilesData(schemasPath))));
 builder.Services.AddSingleton(serviceProvider => Options.Create(new SqlQueries(FileUtility.GetAllFilesData(sqlQueriesPath))));
 builder.Services.AddTransient<ISchemasValidatorService>(x =>

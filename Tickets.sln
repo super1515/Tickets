@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tickets.BAL", "Tickets.BAL\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tickets.DAL", "Tickets.DAL\Tickets.DAL.csproj", "{785FB832-C25D-496B-A2CB-4DBF3BD6D0E6}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{7EECA00C-D95C-4279-A786-1FA9FFA593D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{785FB832-C25D-496B-A2CB-4DBF3BD6D0E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{785FB832-C25D-496B-A2CB-4DBF3BD6D0E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{785FB832-C25D-496B-A2CB-4DBF3BD6D0E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EECA00C-D95C-4279-A786-1FA9FFA593D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EECA00C-D95C-4279-A786-1FA9FFA593D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EECA00C-D95C-4279-A786-1FA9FFA593D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EECA00C-D95C-4279-A786-1FA9FFA593D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

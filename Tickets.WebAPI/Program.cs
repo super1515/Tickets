@@ -12,7 +12,6 @@ using Tickets.BAL.Options.Implementations;
 using Tickets.BAL.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
-
 string schemasPath = AppContext.BaseDirectory + builder.Configuration.GetValue<string>("Schemas:SchemasPath");
 string schemasTemplatePath = builder.Configuration.GetValue<string>("Schemas:SchemasTemplatePath");
 string sqlQueriesPath = AppContext.BaseDirectory + builder.Configuration.GetValue<string>("Sql:SqlQueriesPath");

@@ -14,11 +14,9 @@ namespace Tickets.WebAPI.Controllers
     [RequestSizeLimit(2048)]
     public class ProcessController : ControllerBase
     {
-        private readonly IMappingService _mapper;
         private readonly IProcessService _process;
-        public ProcessController(IMappingService mapper, IProcessService process)
+        public ProcessController(IProcessService process)
         {
-            _mapper = mapper;
             _process = process;
         }
         [HttpPost]
@@ -28,7 +26,7 @@ namespace Tickets.WebAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<string>.Fail(ResponseMessages.RequestInNotValidMsg));
 
-            await _process.CreateSegmentsAsync(_mapper.Map(content));
+            await _process.CreateSegmentsAsync(content);
             return Ok(ApiResponse<string>.Success(null, ResponseMessages.SaleSuccessMsg));
         }
         [HttpPost]

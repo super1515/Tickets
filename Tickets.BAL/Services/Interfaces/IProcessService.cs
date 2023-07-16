@@ -5,7 +5,7 @@ namespace Tickets.BAL.Services.Interfaces
 {
     public interface IProcessService
     {
-        public Task CreateSegmentsAsync(Segments[] request);
+        public Task CreateSegmentsAsync(SaleRequestDto request);
         public Task<bool> RefundSegmentsAsync(RefundRequestDto request);
     }
 }

@@ -28,7 +28,6 @@ builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationDbContext>(o
     .UseSnakeCaseNamingConvention()
     );
 builder.Services.AddAutoMapper(typeof(AppMappingProfile));
-builder.Services.AddScoped<IMappingService, MappingService>();
 builder.Services.AddScoped<IProcessService, ProcessService>();
 builder.Services.AddApiVersioning(config =>
 {

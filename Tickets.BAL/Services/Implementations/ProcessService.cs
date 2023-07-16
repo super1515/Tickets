@@ -8,6 +8,8 @@ using Tickets.BAL.Exceptions;
 using Microsoft.Extensions.Options;
 using Tickets.BAL.Options.Implementations;
 using System.Text.RegularExpressions;
+using Tickets.BAL.Common;
+using AutoMapper;
 /*
 * 
 * Сервис для работы с базой данных
@@ -18,20 +20,35 @@ namespace Tickets.BAL.Services.Implementations
     public class ProcessService : IProcessService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
         private readonly IOptions<SqlQueries> _sqlStorage;
         private const string conflictErrorMsg = "Database conflict error.";
         private const string databaseTimeoutErrorMsg = "Database timeout error.";
         private const string setLockTimeoutSqlName = "set_lock_timeout.sql";
         private const string updateRefundSegmentsSqlName = "update_refund_segments.sql";
-        public ProcessService(ApplicationDbContext context, IOptions<SqlQueries> sqlStorage)
+        public ProcessService(ApplicationDbContext context, IOptions<SqlQueries> sqlStorage, IMapper mapper)
         {
             _context = context;
             _sqlStorage = sqlStorage;
+            _mapper = mapper;
         }
 
-        public async Task CreateSegmentsAsync(Segments[] segments)
+        public async Task CreateSegmentsAsync(SaleRequestDto saleDto)
         {
-            if (segments == null || segments.Length == 0) throw new ArgumentException(nameof(segments));
+            Route[] routes = saleDto.Routes.ToArray();
+            Segments[] segments = new Segments[saleDto.Routes.Count()];
+            for (int i = 0; i < segments.Length; i++)
+            {
+                segments[i] = _mapper.Map<Segments>(saleDto);
+                _mapper.Map(routes[i], segments[i]);
+                segments[i].ArriveDatetimeTimezone = $"-{routes[i].ArriveDatetime.Offset.Hours}";
+                segments[i].ArriveDatetime = routes[i].ArriveDatetime.UtcDateTime;
+                segments[i].OperationTimeTimezone = $"-{saleDto.OperationTime.Offset.Hours}";
+                segments[i].OperationTime = saleDto.OperationTime.UtcDateTime;
+                segments[i].DepartDatetimeTimezone = $"-{routes[i].DepartDatetime.Offset.Hours}";
+                segments[i].DepartDatetime = routes[i].DepartDatetime.UtcDateTime;
+                segments[i].SerialNumber = (uint)i + 1;
+            }
             string setLockTimeoutSql = _sqlStorage.Value.GetBy(setLockTimeoutSqlName)!.Data;
             using var transaction = await _context.Database.BeginTransactionAsync();
             await _context.Database.ExecuteSqlRawAsync(setLockTimeoutSql);
@@ -61,7 +78,6 @@ namespace Tickets.BAL.Services.Implementations
 
         public async Task<bool> RefundSegmentsAsync(RefundRequestDto refundDto)
         {
-            if (refundDto == null) throw new ArgumentNullException(nameof(refundDto));
             bool success = false;
             string updateRefundSegmentsSql = _sqlStorage.Value.GetBy(updateRefundSegmentsSqlName)!.Data;
             NpgsqlParameter operationTimeParam = new NpgsqlParameter("@operation_time", refundDto.OperationTime.UtcDateTime);

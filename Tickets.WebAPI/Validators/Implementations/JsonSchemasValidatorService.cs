@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Schema;
-using System.Text;
+using Json.Schema;
+using System.Text.Json;
 using Tickets.WebAPI.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Tickets.BAL.Options.Implementations;
+using System.Text;
 /*
 * 
 * Сервис для валидации тела запроса JSON схемой
@@ -27,18 +26,11 @@ namespace Tickets.WebAPI.Services.Implementations
         {
             string version = apiVersion.ToString().Length == 1 ? apiVersion + ".0" : apiVersion.ToString();
             string relPath = InsertValuesInTemplate(version, descriptor.ControllerName, descriptor.ActionName);
-            var schema = _schemasStorage.Value.GetBy(relPath)!.Data;
-            JSchema jSchema = JSchema.Parse(schema);
-            JObject jContent;
-            try
-            {
-                jContent = JObject.Parse(content);
-            }
-            catch (JsonReaderException)
-            {
-                return false;
-            }
-            return jContent.IsValid(jSchema);
+            var schema = JsonSchema.FromText(_schemasStorage.Value.GetBy(relPath)!.Data);
+            var json = JsonDocument.Parse(content);
+
+            var result = schema.Validate(json);
+            return result.IsValid;
         }
         private string InsertValuesInTemplate(string version, string controller, string action)
         {
